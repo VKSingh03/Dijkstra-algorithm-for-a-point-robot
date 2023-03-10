@@ -44,9 +44,21 @@ class Node:
         nodes.reverse()
         return moves, nodes
     
-    def __lt__(self,other):
-        return self.getState() < other.getState()
+    # def __lt__(self,other):
+    #     return self.getState() < other.getState()
     
+def getBranches(node):
+    branches = []
+    branches.append(Node(ActionMoveUp(node.get_state()), node, 'U', node.get_cost()+1.0))
+    branches.append(Node(ActionMoveUpRight(node.get_state()) ,node, 'UR', node.get_cost()+1.4))
+    branches.append(Node(ActionMoveRight(node.get_state()), node, 'R', node.get_cost()+1.0))
+    branches.append(Node(ActionMoveDownRight(node.get_state()) ,node, 'DR', node.get_cost()+1.4))
+    branches.append(Node(ActionMoveDown(node.get_state()), node, 'D', node.get_cost()+1.0))
+    branches.append(Node(ActionMoveDownLeft(node.get_state()) ,node, 'DL', node.get_cost()+1.4))
+    branches.append(Node(ActionMoveLeft(node.get_state()), node, 'L', node.get_cost()+1.0))
+    branches.append(Node(ActionMoveUpLeft(node.get_state()) ,node, 'UL', node.get_cost()+1.4))
+    b = [branch for branch in branches if branch.get_state() is not None]
+    return b
 
 def ActionMoveUp(state):
     state_copy = state.copy()
@@ -116,6 +128,49 @@ def ActionMoveUpLeft(state):
     else:
         return None
     
+def dijkstra(nodes, goal_point):
+
+    canvas_size = [250,600]
+    canvas = np.zeros([canvas_size[0], canvas_size[1], 3], dtype=np.uint8)
+
+    goal_reached = False
+    moves_cost = {'U':1, 'UR':1.4, 'R':1, 'DR':1.4, 'D':1, 'DL':1.4, 'L':1, 'UL':1.4}
+    node_array = np.array([[Node([i,j], None, None, math.inf) for j in range(canvas_size[1])] for i in range(canvas_size[0])])
+
+    full_path = None
+    print("Starting Algirithm.......")
+    while (not nodes.empty()):
+
+        current_node = nodes.get()[1]
+
+        if (current_node.getState() == goal_point):
+            print('Goal reached')
+            print("The cost of path: ", current_node.getCost())
+            full_path, node_path = current_node.getFullPath()
+            goal_reached = True
+
+            # for node in node_path:
+            #     pos = node.getState()
+            break
+        else:
+            # find the moves from the current position
+            moves = getBranches(current_node)
+            parent_cost = current_node.get_cost()
+            for move in moves:
+                child_state = move.get_state()
+                new_cost = parent_cost +moves_cost.get(move.get_move())
+                if (node_array[child_state[0],child_state[1]]== math.inf):
+                    child_node = Node(child_state, current_node,move,new_cost)
+                    node_array[child_state[0],child_state[1]]=child_node
+                    nodes.put((child_node.get_cost(),child_node))
+                else: 
+                    if (new_cost < node_array[child_state[0], child_state[1]].getCost()):
+                        child_node = Node(child_state, current_node, move, new_cost)
+                        node_array[child_state[0], child_state[1]] = child_node
+                        nodes.put((child_node.getCost(), child_node))
+                
+        if (goal_reached): break
+       
 
 def main():
     parser = argparse.ArgumentParser()
@@ -130,18 +185,17 @@ def main():
     initial_point = list(initial_point)
     goal_point = list(goal_point)
     file_name = result_folder + "dijkstra_simulation.avi"
-    canvas_size = [250,600]
-
-    canvas = np.zeros([canvas_size[0], canvas_size[1], 3], dtype=np.uint8)
-    space_map = updateCanvasVis(space_map, initial_point, [255,255,255])
-    space_map = updateCanvasVis(space_map, goal_point, [255,255,255])
-    space_map = addObstaclesVis(space_map)
+    
+    # space_map = updateCanvasVis(space_map, initial_point, [255,255,255])
+    # space_map = updateCanvasVis(space_map, goal_point, [255,255,255])
+    # space_map = addObstaclesVis(space_map)
 
     nodes = queue.PriorityQueue()
     init_node = Node(initial_point, None, None, 0)
     nodes.put((init_node.getCost(), init_node))
-
-
+    
+    dijkstra(nodes, goal_point)
+    
     print("Initial state is: ", initial_point)
     print("Goal state is: ", goal_point)
     print("Solving Puzzle ....")
