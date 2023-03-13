@@ -11,7 +11,7 @@ Steps to run the code:
 2. Open terminal and navigate to the directory in which the file is placed. 
 3. Run the below command in terminal to test any random state:
         
-        python3 project1_vineet_singh_code.py --InitState 10 5 --GoalState 240 500
+        python3 project1_vineet_singh_code.py --InitState 10 5 --GoalState 175 125
 
 4. Output text files will be generated in the same directory where the code is placed. 
 
