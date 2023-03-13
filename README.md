@@ -25,3 +25,6 @@ Output of the test case will be saved as :
 
 The canvas size is 600*250 in Cartesian. 
 The inputs of initial and goal nodes should be given in Cartetsian Coordinates.
+
+## Final Simulation Video: 
+[ Simulation Video](dijkstra_simulation_video.mp4)
