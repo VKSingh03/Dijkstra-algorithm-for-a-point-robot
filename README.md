@@ -21,3 +21,7 @@ Note: To test any other initial state and goal state, provide the states to --In
 
 Output of the test case will be saved as : 
 >dijkstra_simulation.avi  
+
+
+The canvas size is 600*250 in Cartesian. 
+The inputs of initial and goal nodes should be given in Cartetsian Coordinates.

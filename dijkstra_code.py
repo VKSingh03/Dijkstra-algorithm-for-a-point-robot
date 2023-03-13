@@ -1,3 +1,7 @@
+# Project by Vineet Singh 
+
+# GITHUB Link to code:         https://github.com/VKSingh03/Dijkstra-algorithm-for-a-point-robot
+
 import numpy as np
 import argparse
 import math
@@ -217,7 +221,7 @@ def dijkstra(start_point, goal_point,result):
         current_node = nodes.get()[1]
         closed_list.append(current_node.get_state())
         canvas = updateMapViz(canvas, current_node.get_state(), [0, 255, 255])
-        result.write(canvas)
+        result.write(cv2.flip(canvas,0))
 
         if (current_node.get_state() == goal_point):
             print('Goal reached')
@@ -227,9 +231,9 @@ def dijkstra(start_point, goal_point,result):
             for node in node_path:
                 pos = node.get_state()
                 canvas = updateMapViz(canvas, pos, [0, 0, 0])
-                result.write(canvas)
+                result.write(cv2.flip(canvas,0))
             for i in range(900):
-                result.write(canvas)
+                result.write(cv2.flip(canvas,0))
         else:
             # Creating child states for the current node
             moves = getBranches(current_node)
